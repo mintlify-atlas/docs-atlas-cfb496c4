@@ -1,0 +1,70 @@
+---
+title: "Command Line Interface Reference"
+description: "RSS Guard's CLI lets you set data paths, control logging, override styles, and add feeds directly from the terminal or browser extensions."
+---
+
+RSS Guard exposes a command line interface (CLI) for scripting, automation, and advanced launch configurations. You can override the user data folder, enable debug output, set a custom log file, and more — all from your terminal.
+
+To see the full option list, run:
+
+```bash
+rssguard --help
+```
+
+## Options reference
+
+```text
+Usage: rssguard [options] [url-1 ... url-n]
+RSS Guard
+
+Options:
+  -h, --help                     Displays overview of CLI.
+  -v, --version                  Displays version of the application.
+  -d, --data <user-data-folder>  Use custom folder for user data and disable
+                                 single instance application mode.
+  -s, --no-single-instance       Allow running of multiple application
+                                 instances.
+  -g, --debug                    Enable "debug" CLI output.
+  -l, --log <log-file-name>      Log application standard/error output to file.
+                                 When empty string is provided as argument, then
+                                 the log file will be stored in user data
+                                 folder.
+  -t, --style <style-name>       Force some application style.
+  -u, --user-agent <user-agent>  Use custom User-Agent HTTP header for all
+                                 network requests. This option takes precedence
+                                 over User-Agent set via application settings.
+  --threads <count>              Specify number of threads. Note that number
+                                 cannot be higher than 32.
+
+Arguments:
+  urls                           List of URL addresses pointing to individual
+                                 online feeds which should be added.
+```
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | Print the CLI usage overview and exit. |
+| `-v, --version` | Print the application version and exit. |
+| `-d, --data <user-data-folder>` | Override the user data folder path. Also disables single-instance mode so multiple instances can run with different data folders. |
+| `-s, --no-single-instance` | Allow multiple RSS Guard instances to run at the same time. |
+| `-g, --debug` | Enable verbose debug output on stdout. |
+| `-l, --log <log-file-name>` | Write stdout/stderr output to a log file. Pass an empty string (`""`) to have RSS Guard choose a path inside the user data folder automatically. |
+| `-t, --style <style-name>` | Force a specific Qt application style (e.g., `Fusion`). |
+| `-u, --user-agent <user-agent>` | Override the User-Agent header for all HTTP requests. Takes precedence over the setting in the application preferences. |
+| `--threads <count>` | Set the number of worker threads (maximum: 32). |
+
+## Adding feeds via CLI
+
+Pass one or more feed URLs as positional arguments to subscribe to them immediately on launch. The [feed URI scheme](https://en.wikipedia.org/wiki/Feed_URI_scheme) is supported alongside plain HTTPS URLs:
+
+```powershell
+rssguard.exe "feed://archlinux.org/feeds/news"
+rssguard.exe "feed:https//archlinux.org/feeds/news"
+rssguard.exe "https://archlinux.org/feeds/news"
+```
+
+If RSS Guard is already running, the URL is forwarded to the existing instance (single-instance mode). Use `-s` to bypass this if needed.
+
+<Tip>
+Browser extensions such as [Open With](https://addons.mozilla.org/en-US/firefox/addon/open-with/) for Firefox can pass the current page's feed URL directly to RSS Guard as a command line argument, letting you subscribe to feeds without copying and pasting URLs manually.
+</Tip>

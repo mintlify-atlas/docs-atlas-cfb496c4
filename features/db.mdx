@@ -1,0 +1,41 @@
+---
+title: "Database Backends: SQLite and MariaDB"
+description: "RSS Guard supports SQLite and MariaDB backends. Choose SQLite for simplicity or MariaDB for centralized multi-instance network setups."
+---
+
+RSS Guard stores all your feeds, articles, and settings in a database whose backend you can switch depending on your needs. Two backends are available: **SQLite** (the default) and **MariaDB**. You can change the active backend at any time from **Settings → Data storage**.
+
+## SQLite (default)
+
+SQLite requires no external server or configuration. RSS Guard manages the database file automatically.
+
+All data is stored in a single file inside your user data folder:
+
+```text
+<user-data-folder>\database\database.db
+```
+
+<Note>
+For the exact path to your user data folder, see [User Data Folder & Portable Mode](/features/userdata).
+</Note>
+
+When a new version of RSS Guard introduces changes to the database schema, a backup of your existing `database.db` file is created automatically before the migration runs.
+
+## MariaDB
+
+The MariaDB (MySQL) backend is intended for users who want centralized data storage on a local network. A single MariaDB server can serve multiple RSS Guard installations.
+
+<Warning>
+Multiple RSS Guard instances can connect to the same MariaDB server, but **not simultaneously**. Concurrent access is not supported and may cause data corruption.
+</Warning>
+
+To configure a MariaDB connection, open **Settings → Data storage** and enter your server host, port, database name, and credentials.
+
+<AccordionGroup>
+  <Accordion title="When to use SQLite">
+    SQLite is the right choice for personal, single-machine use. It requires no setup, works offline, and is fast for typical feed-reading workloads with hundreds of thousands of articles.
+  </Accordion>
+  <Accordion title="When to use MariaDB">
+    Use MariaDB when you want to share a single feed database across multiple devices or users on a local network, and you can ensure that only one RSS Guard instance is active at a time.
+  </Accordion>
+</AccordionGroup>

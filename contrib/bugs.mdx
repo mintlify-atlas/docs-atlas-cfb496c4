@@ -1,0 +1,46 @@
+---
+title: "Reporting Bugs & Getting Support"
+description: "How to report bugs, request features, and get help with RSS Guard — including how to generate a debug log and what to include in your bug report."
+---
+
+RSS Guard uses GitHub for issue tracking and community discussion. If you have encountered a bug, want to request a feature, or have a general question, the sections below explain where to go and what information to provide.
+
+## Before reporting
+
+Before opening a new issue, take a moment to:
+
+- Search [existing issues](https://github.com/martinrotter/rssguard/issues) to see if the problem has already been reported.
+- Check the documentation to confirm the behavior is not intentional or already documented.
+- Reproduce the issue on the latest available release if possible, to rule out a bug that has already been fixed.
+
+## Reporting a bug
+
+Report bugs on the [GitHub Issues page](https://github.com/martinrotter/rssguard/issues/new/choose). When filing a report, include:
+
+- Your operating system and version
+- Your RSS Guard version (visible in **Help > About**)
+- Clear steps to reproduce the issue
+- The application debug log (see below)
+- Screenshots if they help illustrate the problem
+
+<Warning>
+  A debug log is required when reporting a bug. Reports without a log are much harder to diagnose and may not receive a response.
+</Warning>
+
+### Generating a debug log
+
+Start RSS Guard with the `--debug` flag (or `-g`) from the command line. Reproduce your issue, then attach the resulting log file to your GitHub issue.
+
+```bash
+rssguard --debug
+```
+
+You can also view the log without restarting. Open **Help > Display application log** in the menu. The log window must be open (it can be minimized) for new messages to appear.
+
+<Note>
+  The in-application log window may have a small negative impact on RSS Guard performance while it is open. For production use or capturing a complete log, the `--debug` CLI flag is preferred.
+</Note>
+
+## Feature requests and general questions
+
+For broader questions, general ideas, or feature discussions, use the [GitHub Discussions page](https://github.com/martinrotter/rssguard/discussions) rather than the issue tracker. This keeps the issue tracker focused on actionable bugs.

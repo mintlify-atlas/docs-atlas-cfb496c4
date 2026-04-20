@@ -1,0 +1,46 @@
+---
+title: "What is RSS Guard?"
+description: "RSS Guard is an open-source, cross-platform desktop feed reader and podcast player built on Qt, supporting RSS, ATOM, JSON, and major online services."
+---
+
+RSS Guard is an open-source, cross-platform desktop feed reader and podcast player developed on top of the [Qt framework](http://qt-project.org). It is designed to be fast and lightweight while offering enough depth for power users. RSS Guard reads feeds in standard formats such as RSS, ATOM, RDF, and JSON, integrates with popular online feed services, and can play audio and video directly through its built-in media player — no external applications required.
+
+## Key capabilities
+
+<CardGroup cols={2}>
+  <Card title="Feed reading" icon="rss" href="/supported-readers">
+    Read feeds in RSS, ATOM, RDF, JSON, iCalendar, Sitemap, and Gemini formats. Auto-discover feeds from any website URL.
+  </Card>
+  <Card title="Podcast player" icon="play" href="/features/mediaplayer">
+    Play audio and video directly in RSS Guard using a built-in mpv-based (or ffmpeg-based) media player.
+  </Card>
+  <Card title="Online services" icon="cloud" href="/supported-readers">
+    Connect to Feedly, Gmail, Google Reader API services (Bazqux, FreshRSS, Inoreader, Miniflux, Reedah, The Old Reader), Nextcloud News, and Tiny Tiny RSS.
+  </Card>
+  <Card title="XMPP & Gemini" icon="comments" href="/features/xmpp">
+    Fetch real-time ATOM entries via XMPP PubSub, read single-user and multi-user chats, and retrieve feeds over the Gemini protocol.
+  </Card>
+</CardGroup>
+
+## Key highlights
+
+RSS Guard supports the following feed formats out of the box:
+
+- **RSS**, **ATOM**, **RDF**, **JSON** (JSONFeed)
+- **iCalendar** — calendar event feeds
+- **Sitemap** — including Sitemap index discovery and compressed sitemaps
+- **Gemini** — feeds fetched securely over the Gemini protocol
+
+It runs on all major desktop operating systems:
+
+- **Windows** 7 and later
+- **GNU/Linux** — mainstream distributions, PinePhone, and Inkbox e-readers
+- **macOS** 10.14 and later
+- **BSD** — FreeBSD, OpenBSD, NetBSD, and others
+- **OS/2** — ArcaOS and eComStation
+
+<Note>
+  RSS Guard uses a plugin-based architecture. Each supported online service (Feedly, Tiny Tiny RSS, Nextcloud News, and so on) is implemented as a built-in plugin. The [plugin API](/contrib/papi) is also available to developers who want to add new service integrations.
+</Note>
+
+Ready to get started? Head to the [Downloads](/downloads) page to install RSS Guard on your system.

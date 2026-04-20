@@ -1,0 +1,140 @@
+---
+title: "Compiling RSS Guard from Source"
+description: "Build RSS Guard from source using CMake and Qt on Windows, Linux, macOS, BSD, or OS/2. Covers requirements, CMake options, and media player backends."
+---
+
+RSS Guard is a C++ application built with CMake and Qt. It supports Windows, Linux, \*BSD, macOS, and OS/2. Building from source gives you full control over enabled features, target Qt version, and optional media player backends. All build instructions are maintained at the top of the project's `CMakeLists.txt`.
+
+## Requirements
+
+Before you begin, make sure the following are installed on your system:
+
+- **C++17 compiler** — GCC, Clang, or MSVC
+- **CMake 3.14.0 or newer**
+- **Qt 5.14.0 or newer** — or Qt 6.3.0 or newer if building with Qt 6
+- **Go compiler** — required for the bundled `rssguard-article-extractor` plugin
+
+On Windows, if you intend to produce distributable packages, initialize all Git submodules in the repository before building.
+
+## Build steps
+
+RSS Guard uses an out-of-source build layout. Place the build directory alongside the repository directory.
+
+<Steps>
+  <Step title="Clone the repository">
+    Clone the repository into a local directory. On Windows, also initialize submodules if you plan to create packages:
+
+    ```bash
+    git clone https://github.com/martinrotter/rssguard.git rssguard-dir
+
+    # Windows only (for packaging):
+    git -C rssguard-dir submodule update --init --recursive
+    ```
+  </Step>
+
+  <Step title="Create a build directory">
+    Create an empty directory next to the repository for the out-of-source build:
+
+    ```bash
+    mkdir build-dir
+    cd build-dir
+    ```
+  </Step>
+
+  <Step title="Run CMake to configure the build">
+    Configure the project with your chosen build type. Pass any additional `-D` options to enable or disable features (see [CMake configuration options](#cmake-configuration-options) below).
+
+    ```bash
+    # Debug build (for development and testing)
+    cmake -DCMAKE_BUILD_TYPE="Debug" ../rssguard-dir/
+
+    # Release build (for production use)
+    cmake -DCMAKE_BUILD_TYPE="Release" ../rssguard-dir/
+    ```
+  </Step>
+
+  <Step title="Build the project">
+    Compile all sources:
+
+    ```bash
+    cmake --build .
+    ```
+  </Step>
+
+  <Step title="Install">
+    Install the built application to the default or a custom prefix:
+
+    ```bash
+    cmake --install .
+    ```
+  </Step>
+</Steps>
+
+## Full build example
+
+```bash
+# Debug build
+cmake -DCMAKE_BUILD_TYPE="Debug" ../rssguard-dir/
+cmake --build .
+cmake --install .
+
+# Release build
+cmake -DCMAKE_BUILD_TYPE="Release" ../rssguard-dir/
+cmake --build .
+cmake --install .
+```
+
+## CMake configuration options
+
+Pass these options to the `cmake` configure step using `-D<OPTION>=ON` (or `OFF`, or a value).
+
+<AccordionGroup>
+  <Accordion title="Qt version">
+    | Option | Description |
+    | :--- | :--- |
+    | `BUILD_WITH_QT6` | Build with Qt 6 instead of Qt 5. Requires Qt 6.3.0 or newer. |
+  </Accordion>
+
+  <Accordion title="Platform and distribution">
+    | Option | Description |
+    | :--- | :--- |
+    | `BUILD_MSYS2` | Build for the MSYS2 distribution on Windows. Enables MSYS2 FHS layout tweaks. |
+    | `IS_FLATPAK_BUILD` | Set to `ON` when building RSS Guard inside a Flatpak. Activates Flatpak-specific adjustments. |
+    | `FORCE_BUNDLE_ICONS` | Forcibly bundle icons into the executable rather than relying on the system icon theme. |
+    | `RUN_GO_MOD_TIDY` | Runs `go mod tidy` when bundling Go-based plugins during the build. |
+  </Accordion>
+
+  <Accordion title="Features">
+    | Option | Description |
+    | :--- | :--- |
+    | `NO_UPDATE_CHECK` | Disable the automatic check for new application updates at startup. |
+    | `ENABLE_TESTS` | Enable the project's test suite. |
+    | `ENABLE_ICU` | Enable direct ICU library dependency for converting between text encodings. |
+    | `ENABLE_COMPRESSED_SITEMAP` | Enable support for the `sitemap.xml.gz` compressed sitemap format. Requires the `zlib` library. Use `ZLIB_ROOT` to point to a custom zlib installation (e.g., `-DZLIB_ROOT="C:\\zlib"`). |
+  </Accordion>
+
+  <Accordion title="Media player">
+    | Option | Description |
+    | :--- | :--- |
+    | `ENABLE_MEDIAPLAYER_QTMULTIMEDIA` | Enable the media player using the QtMultimedia/FFmpeg backend. |
+    | `ENABLE_MEDIAPLAYER_LIBMPV` | Enable the media player using the libmpv backend. Use `LibMPV_ROOT` to specify a custom libmpv directory. |
+    | `MEDIAPLAYER_FORCE_OPENGL` | When the libmpv media player is enabled, force it to use the OpenGL renderer. The OpenGL renderer is faster, more modern, and supports a wider range of platforms than the legacy window-based renderer. |
+  </Accordion>
+
+  <Accordion title="OAuth client credentials">
+    Preconfigured OAuth credentials for the following services. These are baked into the binary at compile time; leave them unset to require users to supply their own.
+
+    | Option | Description |
+    | :--- | :--- |
+    | `FEEDLY_CLIENT_ID` | OAuth client ID for Feedly. |
+    | `FEEDLY_CLIENT_SECRET` | OAuth client secret for Feedly. |
+    | `GMAIL_CLIENT_ID` | OAuth client ID for Gmail. |
+    | `GMAIL_CLIENT_SECRET` | OAuth client secret for Gmail. |
+    | `INOREADER_CLIENT_ID` | OAuth client ID for Inoreader. |
+    | `INOREADER_CLIENT_SECRET` | OAuth client secret for Inoreader. |
+  </Accordion>
+</AccordionGroup>
+
+<Warning>
+  On macOS, in some cases you must self-sign the built application using the `codesign` utility before it will run. Run `codesign --force --deep --sign - RSS\ Guard.app` after installation.
+</Warning>

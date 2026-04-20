@@ -1,0 +1,58 @@
+---
+title: "Built-in Podcast & Media Player"
+description: "Play podcasts, videos, and YouTube links directly inside RSS Guard using the libmpv or QtMultimedia backend, with yt-dlp integration on supported platforms."
+---
+
+RSS Guard includes a built-in media player so you can listen to podcasts and watch video content without leaving the application. Two different playback backends are available depending on your platform and build, each with different capabilities and trade-offs.
+
+## Available backends
+
+<Tabs>
+  <Tab title="libmpv">
+    The `libmpv` backend is the most capable option and is available on Linux and Windows builds.
+
+    **Features:**
+    - Supports almost all media formats handled by `libmpv`.
+    - Full keyboard and mouse navigation controls.
+    - On-screen controller overlay.
+    - Loads custom `mpv.conf` configuration files from a user-specified directory.
+    - Integrates with `yt-dlp` for comfortable YouTube and other video-platform playback.
+
+    **yt-dlp availability:**
+    - **Windows** — `yt-dlp` is bundled directly in the RSS Guard binary package; no separate installation is needed.
+    - **Linux / other platforms** — install `yt-dlp` or `youtube-dl` system-wide and ensure it is on your `PATH`. Alternatively, set a custom path to the executable inside your `mpv.conf`.
+
+    <Warning>
+    Precompiled macOS binaries do not include the `libmpv` backend. macOS users are automatically directed to the QtMultimedia backend instead.
+    </Warning>
+  </Tab>
+  <Tab title="QtMultimedia / ffmpeg">
+    The `QtMultimedia` backend is a more basic but broadly compatible option. It is the default for macOS and is also used in the Windows 7–compatible build.
+
+    **Features:**
+    - Powered by `ffmpeg` under the hood, supporting a fairly wide range of media formats.
+    - Works on platforms where `libmpv` is unavailable or not shipped.
+
+    **Limitations compared to libmpv:**
+    - No on-screen controller.
+    - No `yt-dlp` / YouTube integration.
+    - No support for custom `mpv.conf` configuration.
+  </Tab>
+</Tabs>
+
+## Usage
+
+The media player is accessible from any hyperlink in RSS Guard:
+
+- **Right-click** any link in the embedded article viewer or web browser and choose the play option from the context menu.
+- Alternatively, select an article and use **Articles → Play in media player** from the menu bar.
+
+## Configuration
+
+Open **Settings → Media player** to configure playback options. The `%data%` placeholder is supported for paths, allowing you to reference files relative to your RSS Guard user data folder.
+
+For the `libmpv` backend, you can point RSS Guard at a custom `mpv` configuration directory. If you select an empty folder, RSS Guard will automatically copy sample configuration files into it as a starting point.
+
+<Note>
+On platforms other than Windows, if you want YouTube playback via `yt-dlp`, either install the tool system-wide (`sudo apt install yt-dlp` on Debian-based systems, `brew install yt-dlp` on macOS) or set the full path to the executable inside your `mpv.conf` file.
+</Note>

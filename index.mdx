@@ -1,97 +1,67 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
+title: "RSS Guard: Cross-Platform Feed Reader & Podcast Player"
+description: "RSS Guard is a fast, lightweight desktop feed reader for RSS, ATOM, JSON, podcasts, XMPP, and online services like Feedly and FreshRSS."
 ---
 
-## Setting up
+RSS Guard is an open-source, cross-platform desktop feed reader built on top of the Qt framework. It supports RSS, ATOM, RDF, JSON, iCalendar, and Sitemap feed formats, integrates with popular online feed services, and includes a built-in podcast/media player — all in a single lightweight application.
 
-Get your documentation site up and running in minutes.
-
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
-</Card>
-
-## Make it yours
-
-Design a docs site that looks great and empowers your users.
-
-<Columns cols={2}>
-  <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
-  >
-    Edit your docs locally and preview them in real time.
+<CardGroup cols={2}>
+  <Card title="Downloads & Installation" icon="download" href="/downloads">
+    Get RSS Guard for Windows, Linux, macOS, BSD, or OS/2. Portable and installer packages available.
   </Card>
-  <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
+  <Card title="Supported Feed Services" icon="rss" href="/supported-readers">
+    Connect to Feedly, Gmail, FreshRSS, Inoreader, Nextcloud News, Tiny Tiny RSS, and more.
   </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
+  <Card title="Article Filters" icon="filter" href="/features/filters">
+    Write JavaScript-based filters to automatically tag, score, accept, or reject incoming articles.
   </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
-  >
-    Auto-generate API documentation from OpenAPI specifications.
+  <Card title="Media Player" icon="play" href="/features/mediaplayer">
+    Play podcasts and video feeds directly in RSS Guard using the built-in mpv or ffmpeg-based player.
   </Card>
-</Columns>
+</CardGroup>
 
-## Create beautiful pages
+## What RSS Guard can do
 
-Everything you need to create world-class documentation.
+RSS Guard is more than a simple feed reader. It handles a wide range of content sources and offers powerful tools for managing your reading workflow:
 
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
+<CardGroup cols={2}>
+  <Card title="Feed Management" icon="list" href="/features/gui-concepts">
+    Add feeds by URL or auto-discover them from any website. Organize with categories and labels.
   </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
+  <Card title="Article Labels" icon="tag" href="/features/labels">
+    Tag articles with color-coded labels. Labels sync with compatible online services.
   </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
+  <Card title="Website Scraping" icon="code" href="/features/scraping">
+    Generate feeds from any website using custom scripts when no feed is available.
   </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
+  <Card title="XMPP Support" icon="comments" href="/features/xmpp">
+    Connect to XMPP chats and PubSub nodes to read real-time ATOM entries.
   </Card>
-</Columns>
+  <Card title="Custom Skins" icon="palette" href="/features/skins">
+    Fully customize RSS Guard's appearance using Qt stylesheets and HTML/CSS article themes.
+  </Card>
+  <Card title="Plugin API" icon="puzzle-piece" href="/contrib/papi">
+    Extend RSS Guard with new service integrations using the C++ plugin API.
+  </Card>
+</CardGroup>
 
-## Need inspiration?
+## Get started quickly
 
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
+<Steps>
+  <Step title="Download RSS Guard">
+    Head to the [Downloads](/downloads) page and grab the installer or portable package for your operating system.
+  </Step>
+  <Step title="Add your first account">
+    When you launch RSS Guard for the first time, choose **RSS/RDF/ATOM/JSON** for local feeds or pick one of the supported online services.
+  </Step>
+  <Step title="Add feeds">
+    Use **Feeds → Add item → Add a new feed** and enter a website URL. RSS Guard will auto-discover available feeds.
+  </Step>
+  <Step title="Read and customize">
+    Browse your articles, set up [labels](/features/labels), configure [notifications](/features/notifications), and optionally write [article filters](/features/filters) to automate your reading workflow.
+  </Step>
+</Steps>
+
+## Supported platforms
+
+RSS Guard runs on **Windows 7+**, **GNU/Linux**, **macOS 10.14+**, **BSD**, and **OS/2**. See the full [supported operating systems](/supported-os) page for details.

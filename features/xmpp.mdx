@@ -1,0 +1,48 @@
+---
+title: "XMPP Integration & PubSub Feeds"
+description: "Use RSS Guard's XMPP plugin to receive real-time messages from single-user chats, multi-user chats, PubSub service nodes, and PubSub PEP nodes."
+---
+
+RSS Guard includes a basic [XMPP](https://xmpp.org) plugin that lets you receive real-time messages from XMPP-based sources alongside your regular RSS and Atom feeds. The plugin automatically fetches live messages from supported node types, including Atom entries pushed via AtomToPubsub, and can also retrieve archived messages from the server.
+
+<Warning>
+XMPP support was added recently and is considered highly experimental. Expect bugs.
+</Warning>
+
+## Supported node types
+
+The XMPP plugin supports the following types of XMPP nodes:
+
+<CardGroup cols={2}>
+  <Card title="Single-user chats">
+    Direct one-to-one XMPP conversations.
+  </Card>
+  <Card title="Multi-user chats">
+    Group chat rooms (MUC).
+  </Card>
+  <Card title="PubSub service nodes">
+    [XEP-0060](https://xmpp.org/extensions/xep-0060.html) publish-subscribe service nodes hosted on an XMPP server.
+  </Card>
+  <Card title="PubSub PEP nodes">
+    [XEP-0163](https://xmpp.org/extensions/xep-0163.html) Personal Eventing Protocol nodes attached to a user's bare JID.
+  </Card>
+</CardGroup>
+
+## Configuration
+
+RSS Guard automatically [discovers](https://xmpp.org/extensions/xep-0030.html) PubSub services hosted on the same XMPP server you are connected to. If you need to subscribe to nodes on other servers or enter nodes that cannot be auto-discovered, add them manually via the **Extra nodes** setting in the plugin configuration dialog.
+
+## Node format
+
+The **Extra nodes** field accepts one node address per entry. The format of the address determines how RSS Guard interprets it:
+
+| Format | Interpretation |
+| :--- | :--- |
+| `something.url` (no `@`) | Treated as a **PubSub service directory**. For example, `news.movim.eu` is a known public directory. |
+| `something@something.url` (contains `@`) | Treated as a direct **single-user or multi-user chat**, or a **PubSub PEP node**. RSS Guard automatically determines which kind of node it is. |
+
+## Implementation notes
+
+<Note>
+RSS Guard uses the [qxmpp](https://invent.kde.org/libraries/qxmpp) library for this plugin. Because qxmpp has a highly asynchronous API, RSS Guard also behaves asynchronously in some situations. Fetching archived messages, for example, is not instantaneous but rather gradual — messages arrive incrementally rather than all at once.
+</Note>

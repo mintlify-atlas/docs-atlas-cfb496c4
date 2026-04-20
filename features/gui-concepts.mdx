@@ -1,0 +1,49 @@
+---
+title: "Managing Accounts and Adding Feeds"
+description: "Learn how to navigate the RSS Guard interface, set up your first account, and add feeds using URL auto-discovery or the advanced feed dialog."
+---
+
+RSS Guard organizes your reading experience across three panels: a feed list on the left, an article list in the center, and an article preview pane on the right. Together they provide a focused, distraction-free environment for consuming news and podcast content.
+
+## Interface overview
+
+The main window is divided into three distinct panels that work together:
+
+- **Feed list** — displays all your accounts, feeds, labels, queries, and special items such as the recycle bin.
+- **Article list** — shows articles for whichever item is currently selected in the feed list.
+- **Article preview** — renders the full content of the selected article, or summary information about the selected feed list item when no article is active.
+
+The titlebar shows the total number of unread articles in square brackets so you always know your reading backlog at a glance. Two independent toolbars are available — one for the feed list and one for the article list — each configurable with the actions you use most.
+
+## Adding your first account
+
+When you launch RSS Guard for the very first time, the **Add account** dialog opens automatically. Here you choose the type of service you want to connect to.
+
+For a standard feed reader that consumes RSS, RDF, Atom, or JSON feeds, select the **RSS/RDF/ATOM/JSON** option. Other entries in the list correspond to hosted services such as Nextcloud News, Inoreader, and Feedly.
+
+<Note>
+Each account type exposes its own set of account-specific actions. These are accessible through the account's submenu in the feed list, so the options you see will differ between a local RSS account and a cloud-synced service.
+</Note>
+
+## Adding feeds
+
+Once an account exists you can add any number of feeds to it. RSS Guard supports automatic feed discovery, so you rarely need to hunt down a raw feed URL.
+
+<Steps>
+  <Step title="Open the add feed dialog">
+    In the menu bar, select **Feeds → Add item → Add a new feed**. The feed discovery dialog will open.
+  </Step>
+  <Step title="Enter the website URL">
+    Type the URL of any website you want to follow — for example `https://www.hltv.org`. RSS Guard will contact the site and automatically discover all available feed sources.
+  </Step>
+  <Step title="Select a discovered feed">
+    Choose from the list of feeds that RSS Guard found on the page and confirm your selection.
+  </Step>
+  <Step title="(Optional) Use the advanced dialog">
+    If you already know the direct feed URL, switch to the advanced dialog. Enter the URL into the **Source** field and click **Fetch it now**. RSS Guard will download the feed metadata and populate all remaining fields automatically. In the vast majority of cases no further configuration is needed.
+  </Step>
+</Steps>
+
+<Tip>
+In 99% of cases you only need to paste the feed URL into the **Source** field and click **Fetch it now** — RSS Guard fills in everything else.
+</Tip>

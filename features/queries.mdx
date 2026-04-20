@@ -1,0 +1,56 @@
+---
+title: "Saved Search Queries"
+description: "Create persistent article searches in RSS Guard using regular expressions or SQL WHERE clauses to surface matching articles across all your feeds."
+---
+
+The article list includes a search box for quickly filtering articles while you are browsing. When you want a search to persist permanently — surviving restarts and always showing up in the feed list — you can save it as a **Query**. Queries behave like virtual folders: click one and the article list shows every matching article from across all your feeds.
+
+## Creating a query
+
+<Steps>
+  <Step title="Open the query dialog">
+    In the feed list, right-click the **Queries** item. A dialog will open where you can configure the new query.
+  </Step>
+  <Step title="Enter a name">
+    Give the query a descriptive name. This is how it will appear in the feed list under the **Queries** node.
+  </Step>
+  <Step title="Enter the search phrase">
+    Type either a regular expression or a SQL `WHERE` clause (see [Query syntax](#query-syntax) below).
+  </Step>
+  <Step title="Confirm">
+    Click the confirm button. The query will immediately appear in the feed list. Click it at any time to load all matching articles.
+  </Step>
+</Steps>
+
+## Query syntax
+
+Two modes are supported. You must use exactly one of them per query.
+
+<Tabs>
+  <Tab title="Regular expression">
+    Enter a valid regular expression. RSS Guard will match it against article content and titles.
+
+    ```text
+    (security|vulnerability)\s+patch
+    ```
+
+    The regex syntax follows the [.NET regular expression](https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expression-language-quick-reference) specification.
+
+    <Warning>
+    Regular expression queries perform a full scan of the database on every load. On databases with many thousands of articles, this can be noticeably slow.
+    </Warning>
+  </Tab>
+  <Tab title="SQL WHERE clause">
+    Enter a SQL `WHERE` clause that is compatible with the `Messages` table schema. This is evaluated directly by the database engine and can be more efficient for structured conditions.
+
+    ```sql
+    is_read = 0 AND date_created > strftime('%s', 'now', '-7 days')
+    ```
+
+    Refer to the [`Messages` table definition](https://github.com/martinrotter/rssguard/blob/master/resources/sql/db_init.sql) for the full list of available columns.
+  </Tab>
+</Tabs>
+
+<Note>
+Unread and total article counts are **not** displayed in the feed list for query nodes. This limitation exists for performance reasons and may be removed in a future release.
+</Note>

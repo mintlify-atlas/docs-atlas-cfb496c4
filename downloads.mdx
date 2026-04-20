@@ -1,0 +1,62 @@
+---
+title: "Download & Install RSS Guard"
+description: "Download RSS Guard for Windows, Linux, macOS, BSD, or OS/2. Choose between NSIS installers, portable 7z packages, Flatpak, or Chocolatey."
+---
+
+The official place to download RSS Guard is the [GitHub Releases page](https://github.com/martinrotter/rssguard/releases). Packages are available for Windows, Linux, macOS, and BSD. Only download RSS Guard from trusted sources.
+
+<Tabs>
+  <Tab title="Windows">
+    On Windows, RSS Guard is available in three ways:
+
+    - **NSIS installer** — self-contained installer that handles upgrades cleanly and removes all traces on uninstall. This is the recommended method.
+    - **Portable 7z package** — download, unpack, and run. No installation required.
+    - **Chocolatey** — unofficial community packages available at [community.chocolatey.org](https://community.chocolatey.org/packages/rssguard).
+
+    <Info>
+      Official Windows packages come in two flavors:
+
+      - `win7` — built with Qt 5, uses `QtMultimedia` for media playback. Smaller installation size and lower memory footprint. Works on newer Windows versions as well.
+      - `win10` — built with Qt 6, uses `libmpv` for media playback (supports almost every audio and video format). Larger installation size.
+    </Info>
+
+    <Warning>
+      RSS Guard binaries from the official download page are **not digitally signed**. Windows Defender SmartScreen may show a warning when you launch RSS Guard for the first time. This is expected behavior and does not indicate a security risk.
+    </Warning>
+
+    <Note>
+      If you see an error about a missing DLL, install the [All-in-One runtime DLL pack](https://github.com/abbodi1406/vcredist/releases) to resolve missing MSVC runtime library dependencies.
+    </Note>
+  </Tab>
+  <Tab title="Linux">
+    On Linux, the recommended approach is to use the official package from your distribution's repository if one is available. RSS Guard is packaged for many distributions — check [repology.org](https://repology.org/project/rssguard/versions) for current packaging status.
+
+    You can also install RSS Guard via **Flatpak** from [Flathub](https://flathub.org/apps/search?q=rssguard):
+
+    ```bash
+    flatpak install flathub io.github.martinrotter.rssguard
+    ```
+
+    If you run into issues specific to the Flatpak sandbox, see the [Flatpak troubleshooting](/troubleshooting/flatpak) page.
+  </Tab>
+  <Tab title="macOS">
+    macOS users can download a **DMG package** from the [GitHub Releases page](https://github.com/martinrotter/rssguard/releases). Open the DMG, drag RSS Guard to your Applications folder, and launch it.
+
+    <Warning>
+      On some macOS versions, you may need to self-sign the application before it will run. Use the `codesign` utility:
+
+      ```bash
+      codesign --force --deep --sign - /Applications/RSS\ Guard.app
+      ```
+    </Warning>
+  </Tab>
+  <Tab title="BSD / OS/2">
+    RSS Guard is known to run on **FreeBSD**, **OpenBSD**, **NetBSD**, and other BSD variants, as well as **OS/2**-compatible systems such as ArcaOS and eComStation. Build from source or check whether your distribution or ports tree includes an RSS Guard package.
+
+    See the [Supported operating systems](/supported-os) page for the full list of confirmed platforms.
+  </Tab>
+</Tabs>
+
+## Development builds
+
+A continuously updated development (beta) build is available at the [devbuild5 release](https://github.com/martinrotter/rssguard/releases/tag/devbuild5). It is rebuilt automatically whenever the source code changes (with approximately a 30-minute delay for compilation). Use development builds to test the latest features or help identify bugs before stable releases.

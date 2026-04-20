@@ -1,0 +1,94 @@
+{
+  "projectType": "general",
+  "projectName": "RSS Guard",
+  "projectDescription": "A fast, lightweight, cross-platform desktop feed reader supporting RSS/ATOM/JSON/iCalendar feeds, podcast playback, XMPP, Gemini protocol, and integration with major online feed services.",
+  "theme": "almond",
+  "primaryColor": "#94cb04",
+  "lightColor": "#545454",
+  "darkColor": null,
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "downloads",
+              "supported-os",
+              "supported-readers"
+            ]
+          },
+          {
+            "group": "Core Features",
+            "pages": [
+              "features/gui-concepts",
+              "features/article-display",
+              "features/labels",
+              "features/notifications",
+              "features/mediaplayer",
+              "features/queries"
+            ]
+          },
+          {
+            "group": "Power User Features",
+            "pages": [
+              "features/filters",
+              "features/scraping",
+              "features/xmpp",
+              "features/skins"
+            ]
+          },
+          {
+            "group": "Configuration & Data",
+            "pages": [
+              "features/userdata",
+              "features/db",
+              "features/cli",
+              "features/opmlimport",
+              "features/dbcleaning"
+            ]
+          },
+          {
+            "group": "Contributing",
+            "pages": [
+              "contrib/compile",
+              "contrib/localization",
+              "contrib/papi",
+              "contrib/bugs",
+              "troubleshooting/flatpak"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Multi-format feed support (RSS, ATOM, RDF, JSON, iCalendar, Sitemap)",
+    "Integration with Feedly, Gmail, FreshRSS, Inoreader, Nextcloud News, Tiny Tiny RSS, and more",
+    "Built-in media/podcast player (libmpv and QtMultimedia backends)",
+    "JavaScript-based article filtering with full scripting API",
+    "Website scraping via custom scripts to generate feeds",
+    "XMPP PubSub, single-user and multi-user chat support",
+    "Gemini protocol support for secure feed fetching",
+    "Customizable skins using Qt stylesheets and HTML/CSS",
+    "Cross-platform: Windows, Linux, macOS, BSD, OS/2",
+    "Portable mode and dual database backend (SQLite/MariaDB)",
+    "Labels/tags with synchronization to supported online services",
+    "Plugin system for extending service integrations via C++ API"
+  ],
+  "publicApiSurface": [
+    "filterMessage() — JavaScript article filter function",
+    "msg — Global article object in filter scripts (title, url, contents, isRead, isImportant, assignLabel, etc.)",
+    "feed — Global feed object in filter scripts (customId, title)",
+    "acc — Global account object in filter scripts (findLabel, createLabel, availableLabels)",
+    "app.log(), app.showNotification() — Application utility functions in filter scripts",
+    "utils — Utility functions (fromXmlToJson, readTextFile, writeTextFile, parseDateTime)",
+    "fs.runExecutable(), fs.runExecutableGetOutput() — Filesystem/process execution in filter scripts",
+    "ServiceEntryPoint — C++ plugin base class for new service integrations",
+    "ServiceRoot — C++ plugin account class for service plugin core functionality",
+    "CLI: rssguard [options] [url-1 ... url-n] — Command-line interface",
+    "CLI: --data, --no-single-instance, --debug, --log, --style, --user-agent, --threads"
+  ]
+}

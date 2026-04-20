@@ -1,0 +1,112 @@
+---
+title: "Flatpak Installation Troubleshooting"
+description: "Fix common issues with the RSS Guard Flatpak build, including sandbox permissions for autostart, external browsers, external tools, and CSS2RSS."
+---
+
+If you installed RSS Guard [from Flathub](https://flathub.org/en/apps/io.github.martinrotter.rssguard), some features may not work out of the box. This is a consequence of Flatpak's sandboxing model, which restricts how applications interact with the rest of the system. The sections below cover the most common issues and how to resolve each one.
+
+## Launching at system startup
+
+To enable RSS Guard to start automatically at system startup, grant it write access to the `~/.config/autostart` directory:
+
+```bash
+flatpak override --user --filesystem=xdg-config/autostart io.github.martinrotter.rssguard
+```
+
+After running the command, restart RSS Guard and enable the setting:
+
+<Steps>
+  <Step title="Open Settings">Go to **Tools** > **Settings**.</Step>
+  <Step title="Select the General category">Select the **General** category in the left panel.</Step>
+  <Step title="Enable autostart">Tick the **Launch RSS Guard on operating system startup** checkbox.</Step>
+  <Step title="Save">Click the **Apply** button to save your settings.</Step>
+</Steps>
+
+## Using an external web browser
+
+To allow RSS Guard to open links in a custom browser, grant it permission to launch other applications:
+
+```bash
+flatpak --user override --talk-name=org.freedesktop.Flatpak io.github.martinrotter.rssguard
+```
+
+Then restart RSS Guard and configure the custom browser:
+
+<Steps>
+  <Step title="Open Settings">Go to **Tools** > **Settings**.</Step>
+  <Step title="Select the network category">Select the **Network & web & tools** category in the left panel.</Step>
+  <Step title="Open the External web browser tab">Navigate to the **External web browser** tab.</Step>
+  <Step title="Enable custom browser">Tick the **Use custom external web browser** checkbox.</Step>
+  <Step title="Set the executable">In the **Web browser executable** field, enter: `/usr/bin/flatpak-spawn`</Step>
+  <Step title="Set the parameters">In the **Parameters** field, enter: `--host firefox "%1"` — replace `firefox` with your browser of choice.</Step>
+  <Step title="Save">Click the **Apply** button.</Step>
+</Steps>
+
+## Adding external tools
+
+Granting access to launch other applications (the same permission as for the external browser) is also required for external tools:
+
+```bash
+flatpak --user override --talk-name=org.freedesktop.Flatpak io.github.martinrotter.rssguard
+```
+
+Then restart RSS Guard and add the tool:
+
+<Steps>
+  <Step title="Open Settings">Go to **Tools** > **Settings**.</Step>
+  <Step title="Select the network category">Select the **Network & web & tools** category in the left panel.</Step>
+  <Step title="Open the External tools tab">Navigate to the **External tools** tab.</Step>
+  <Step title="Add a new tool">Click the **+ Add tool** button.</Step>
+  <Step title="Name the tool">Double-click the **New tool** row and enter a name.</Step>
+  <Step title="Set the executable">Double-click under the **Executable** column and enter: `/usr/bin/flatpak-spawn`</Step>
+  <Step title="Set the parameters">Double-click under the **Parameters** column and enter: `--host mpv` — replace `mpv` with your tool of choice.</Step>
+  <Step title="Save">Click the **Apply** button.</Step>
+</Steps>
+
+## Using CSS2RSS
+
+You can use [CSS2RSS](https://github.com/Owyn/CSS2RSS) without breaking the Flatpak sandbox by running it inside the RSS Guard Flatpak environment.
+
+<Steps>
+  <Step title="Install the Flatpak SDK">
+    Install the Freedesktop SDK so you can use `pip` to install CSS2RSS dependencies:
+
+    ```bash
+    flatpak install org.freedesktop.Sdk//25.08
+    ```
+  </Step>
+
+  <Step title="Install CSS2RSS dependencies">
+    Install the required Python packages inside the RSS Guard Flatpak:
+
+    ```bash
+    flatpak run --runtime=org.freedesktop.Sdk//25.08 --command=pip io.github.martinrotter.rssguard install beautifulsoup4 maya
+    ```
+  </Step>
+
+  <Step title="Download CSS2RSS">
+    Download the CSS2RSS script into RSS Guard's configuration directory:
+
+    ```bash
+    flatpak run --command=curl io.github.martinrotter.rssguard \
+      https://raw.githubusercontent.com/Owyn/CSS2RSS/refs/heads/main/css2rss.py \
+      -o ~/.var/app/io.github.martinrotter.rssguard/config/rssguard5/css2rss.py
+    ```
+  </Step>
+
+  <Step title="Remove the SDK">
+    Uninstall the SDK — it is no longer needed:
+
+    ```bash
+    flatpak uninstall org.freedesktop.Sdk//25.08
+    ```
+  </Step>
+
+  <Step title="Use CSS2RSS">
+    When adding or editing a feed, fill in the **Post-processing script** field with the path to `css2rss.py` inside the configuration directory.
+  </Step>
+</Steps>
+
+<Note>
+  For Flatpak-specific bugs not covered here, check the [GitHub Issues page](https://github.com/martinrotter/rssguard/issues) and filter by the Flatpak label, or open a new issue with details about your system and the steps to reproduce the problem.
+</Note>

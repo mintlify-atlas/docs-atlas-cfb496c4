@@ -1,0 +1,73 @@
+---
+title: "Custom Skins & UI Theming"
+description: "Customize RSS Guard's appearance with Qt stylesheet-based skins that control both the application UI and the article viewer HTML rendering."
+---
+
+RSS Guard is a skinable application. Using [Qt stylesheets](https://doc.qt.io/qt-5/stylesheet.html), the graphical user interface can be changed almost entirely. The skin API is highly extensible and allows tweaking the visual presentation of RSS Guard in many ways without much work.
+
+## Selecting a skin
+
+Open **Settings → User interface** to choose a skin and a Qt style. The two settings are independent — you can mix any Qt style with any skin to find a combination you like.
+
+<Tip>
+Experiment with different style and skin combinations. Some combinations produce results that neither setting achieves on its own.
+</Tip>
+
+## Skin file structure
+
+Each skin lives in its own folder. The folder must contain the following files:
+
+<AccordionGroup>
+
+<Accordion title="metadata.xml">
+An XML file with basic information about the skin: its name, author, version, and other metadata.
+</Accordion>
+
+<Accordion title="qt_style.qss">
+A [Qt stylesheet](https://doc.qt.io/qt-5/stylesheet.html) file that controls the appearance of application UI controls such as buttons, menus, toolbars, and list views. This stylesheet is applied when the **Use skin colors** option is enabled.
+</Accordion>
+
+<Accordion title="qt_style_forced.qss">
+A Qt stylesheet that is always applied, even when **Use skin colors** is turned off. Use this file for styles that must be present regardless of the color palette setting.
+</Accordion>
+
+<Accordion title="html_style.css">
+A master CSS file applied to every article displayed in the article viewer.
+</Accordion>
+
+<Accordion title="html_*.html">
+One or more HTML template files that are dynamically assembled to produce the complete HTML page shown in the article viewer.
+</Accordion>
+
+</AccordionGroup>
+
+<Note>
+Not every skin needs to provide full theming for every UI component. A skin can supply only a custom HTML/CSS setup for the article viewer and minimal Qt CSS for UI controls, and it will still be valid.
+</Note>
+
+## Skin location
+
+Built-in skins are stored in a folder alongside the RSS Guard executable. To install a custom skin, place it in the `skins` subfolder inside the RSS Guard user data folder. Create the folder manually if it does not exist.
+
+For a skin named `greenland`, the directory structure should look like this:
+
+```
+<user-data-path>/skins/greenland/
+├── metadata.xml
+├── qt_style.qss
+├── qt_style_forced.qss
+├── html_style.css
+└── html_*.html
+```
+
+On Windows the path separator is a backslash:
+
+```
+<user-data-path>\skins\greenland
+```
+
+## Skin color palette
+
+Skins can define a custom color palette as an additional mechanism for changing the look of RSS Guard. This feature is toggled with the **Use skin colors** checkbox in **Settings → User interface**.
+
+When **Use skin colors** is enabled, `qt_style.qss` is applied on top of the selected Qt style. When it is disabled, only `qt_style_forced.qss` is applied, allowing the Qt style's default colors to show through.

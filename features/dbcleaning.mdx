@@ -1,0 +1,33 @@
+---
+title: "Cleaning Up Your Article Database"
+description: "Keep RSS Guard running fast by removing old articles manually via Tools → Cleanup database or automatically with per-feed article limits."
+---
+
+RSS Guard handles large databases well, but over time hundreds of thousands of stored articles can slow things down. Regular cleanup keeps the database lean and RSS Guard responsive.
+
+## Manual cleanup
+
+Go to **Tools → Cleanup database** to open the cleanup dialog. Select the options you want and click **OK** to process the database file.
+
+<Tip>
+Enable the **Optimize database file** option to shrink `database.db` to its smallest possible size by removing empty space after deletions.
+</Tip>
+
+## Automatic cleanup
+
+The more flexible approach is automatic per-feed cleanup. You can configure it in two places:
+
+- **Application-wide**: **Tools → Settings → Feeds & articles → Feed fetching → Limiting amount of articles in feeds**
+- **Per feed**: Select a feed, then **Edit selected items → Limiting amount of articles in feeds**
+
+Set the number of newest articles to retain per feed. You can also choose to never remove unread or starred articles, so important content is preserved regardless of age.
+
+<Note>
+Automatic cleanup runs each time a feed is fetched, so the database stays trim without manual intervention.
+</Note>
+
+## Tips for keeping your database small
+
+- If you use [feed scraping](/features/scraping) with full-content fetching, article sizes grow significantly — consider lower article limits for those feeds.
+- The [SQLite backend](/features/db) stores everything in a single file (`database.db`). Optimizing it after a large cleanup reclaims disk space immediately.
+- The [MariaDB backend](/features/db) manages storage differently; consult your MariaDB server configuration for storage limits.

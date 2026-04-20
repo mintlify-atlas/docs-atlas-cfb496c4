@@ -1,0 +1,38 @@
+---
+title: "Importing and Exporting Feeds (OPML)"
+description: "Use OPML files to import and export your feed subscriptions in RSS Guard, making it easy to migrate between readers or back up your feed list."
+---
+
+OPML (Outline Processor Markup Language) is the standard interchange format for feed subscription lists. It captures your feed URLs and folder structure in a single XML file, making it the most reliable way to migrate between feed readers or create a portable backup of your subscriptions.
+
+## Importing an OPML file
+
+RSS Guard provides a dedicated import dialog for OPML files. Open it from the application menu, then use the file picker to select your `.opml` or `.xml` file.
+
+Once loaded, you can optionally specify an existing category where the imported feeds will be placed. If you skip this step, feeds are imported into the categories defined inside the OPML file itself.
+
+<Note>
+Importing may take some time if the OPML file contains many feeds, because RSS Guard fetches online metadata — including favicons and titles — for each subscription during the import.
+</Note>
+
+<Note>
+Online service accounts such as Feedly, Inoreader, or Miniflux manage your subscriptions server-side. If you use one of these services through RSS Guard's plugin system, you do not need to import an OPML file — your feeds are synced directly from the service.
+</Note>
+
+## Exporting an OPML file
+
+To export your current feed list, open the export option from the application menu. RSS Guard will write all your feed URLs and category structure into a single OPML file that any standards-compliant feed reader can import.
+
+<Tip>
+Export your OPML file periodically as a backup. Even if you use an online service, having a local OPML snapshot means you can restore your subscriptions in any reader without depending on the service's availability.
+</Tip>
+
+## What OPML contains
+
+An OPML file produced by RSS Guard includes:
+
+- Feed URLs and titles for every subscription
+- The folder/category hierarchy you have organized feeds into
+- Feed-level metadata such as the homepage URL and description (when available)
+
+It does **not** include article content, read/unread state, labels, or filter rules. Those are stored in your [database](/features/db).

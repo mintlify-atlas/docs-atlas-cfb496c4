@@ -1,0 +1,31 @@
+---
+title: "Desktop Notifications & Alerts"
+description: "Configure desktop notifications for new articles, fetch events, OAuth token refreshes, and version updates, including custom audio alerts in RSS Guard."
+---
+
+RSS Guard provides customizable desktop notifications that keep you informed of important events without requiring you to keep the main window in the foreground. Each notification event is individually configurable so you can choose exactly what warrants an alert.
+
+## Configurable notification events
+
+The following events can each be independently enabled or disabled, and configured with their own appearance and sound:
+
+- **New (unread) articles fetched** — fires whenever a feed refresh completes and new unread articles are found.
+- **Fetching of articles is started** — notifies you when a scheduled or manual fetch begins.
+- **Login OAuth tokens are refreshed** — alerts you when credentials for OAuth-authenticated services (such as Inoreader or Feedly) are renewed.
+- **New RSS Guard version is available** — lets you know when an update has been released.
+
+## Audio notifications
+
+Each notification event can optionally play an audio alert. Only `.wav` files are supported; other audio formats are not recognized.
+
+Place your `.wav` sound files inside your RSS Guard user data folder and reference them in the notification settings using the `%data%` placeholder. For example:
+
+```text
+%data%/sounds/new-articles.wav
+```
+
+This placeholder ensures the path remains correct regardless of where RSS Guard's user data folder is located on the current system.
+
+<Tip>
+You can trigger notifications programmatically from [article filters](/features/filters) using the `app.showNotification()` JavaScript function. This makes it possible to send a custom notification only when a specific condition is met — for example, when an article from a high-priority feed arrives.
+</Tip>

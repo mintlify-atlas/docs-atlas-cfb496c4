@@ -1,0 +1,62 @@
+---
+title: "User Data Folder & Portable Mode"
+description: "Learn where RSS Guard stores user data, how portable mode works, and how to use the %data% placeholder in filters, skins, and notifications."
+---
+
+RSS Guard is designed with portability in mind, keeping all user data — settings, databases, skins, and icons — in a single folder that can be moved across operating systems without reconfiguration.
+
+## Modes
+
+RSS Guard detects which mode to use automatically at startup.
+
+**Non-portable mode** is the default. User data is stored in the platform's standard configuration directory:
+
+- **Windows:** `C:\Users\<user>\AppData\Local\RSS Guard 5\data\`
+- **Linux / macOS:** the standard XDG or platform config directory for the current user
+
+RSS Guard activates non-portable mode when it finds the file `C:\Users\<user>\AppData\Local\RSS Guard 5\data\config\config.ini` (on Windows) or the equivalent config file on other platforms.
+
+**Portable mode** stores everything in a `data5` subfolder placed next to the RSS Guard binary (e.g., next to `rssguard.exe` on Windows). This mode activates automatically when non-portable mode detection fails — for example, when running RSS Guard from a USB drive or a directory where the standard config file does not exist.
+
+<Tip>
+To see the exact paths that RSS Guard is currently using, open **Help → About application → Resources**.
+</Tip>
+
+## The %data% placeholder
+
+`%data%` is a shortcut that expands to the full path of your user data folder at runtime. You can use it anywhere a file path is accepted in the following contexts:
+
+1. **Article filter scripts** — reference scripts stored inside your user data folder from within JavaScript-based article filters.
+2. **Custom mpv config directory** — point the libmpv-based media player to a config directory inside your user data folder.
+3. **Skin files** — inside a custom skin, `%data%` points to the skin's own base folder rather than the global user data root.
+4. **Feed source and post-process script paths** — load feed generation or processing scripts from user data folder using the `source` and `post-process script` feed attributes.
+5. **Notification audio file paths** — play a custom sound when events occur, for example:
+
+```text
+%data%\audio\new-messages.wav
+```
+
+## Custom content
+
+Your user data folder supports two special subfolders for extending RSS Guard:
+
+| Subfolder | Purpose |
+|-----------|---------|
+| `icons/`  | Custom icon themes |
+| `skins/`  | Custom skins (each skin in its own subfolder) |
+
+Example path patterns for these locations on Windows:
+
+```text
+C:\Users\<user>\AppData\Local\RSS Guard 5\data\icons\
+C:\Users\<user>\AppData\Local\RSS Guard 5\data\skins\my-theme\
+C:\Users\<user>\AppData\Local\RSS Guard 5\data\audio\new-messages.wav
+```
+
+On portable installations, the same structure lives inside `data5\` next to the binary:
+
+```text
+.\data5\icons\
+.\data5\skins\my-theme\
+.\data5\audio\new-messages.wav
+```

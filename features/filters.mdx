@@ -1,0 +1,410 @@
+---
+title: "Article Filters & JavaScript Scripting"
+description: "Automate article tagging, scoring, and accept/reject decisions using JavaScript snippets that execute on every feed download in RSS Guard."
+---
+
+Article filters are JavaScript snippets that RSS Guard executes automatically whenever articles or feeds are downloaded. Each filter receives the incoming article via the `msg` global, can inspect and mutate its properties — marking it important, changing its contents, assigning labels, or adjusting its score — and must return a `FilteringAction` value that tells RSS Guard whether to accept, ignore, or purge the article. Filters are managed in the **Article filters** dialog, which also lets you test a filter against existing messages or run it across checked feeds to apply changes permanently.
+
+<Note>
+Some attributes (`read/unread/starred` states) are synchronized back to your account's server. For example, marking an article starred in a filter will propagate that change back to a TT-RSS server.
+</Note>
+
+## The `filterMessage()` function
+
+Every filter script must expose a function with this exact signature:
+
+```js
+function filterMessage() { }
+```
+
+The function must return a value from the [`FilteringAction`](#filteringaction-enum) enum. The supported JavaScript standard library conforms to [ECMA-262](https://ecma-international.org/publications-and-standards/standards/ecma-262).
+
+### FilteringAction return values
+
+| Enumerant | Integer | Description |
+| :--- | :--- | :--- |
+| `Accept` | `1` | Message is accepted and will be added or updated in the database. |
+| `Ignore` | `2` | Message is ignored and will **not** be added or updated. Already-existing messages are not removed. |
+| `Purge` | `4` | Existing message is purged from the database completely. Behaves like `Ignore` for new incoming messages. |
+
+<Note>
+`msg` attributes are synchronized with the remote service even when you return `Purge` or `Ignore`. You can still mutate article properties in a filter that ultimately ignores the article, and those mutations will be synced back to the server.
+</Note>
+
+## Global variables
+
+Every filter script has access to the following globals:
+
+| Variable | What it provides |
+| :--- | :--- |
+| `msg` | The article currently being filtered or modified. |
+| `feed` | Information about the feed the article belongs to. |
+| `acc` | Account-related information. |
+| `app` | Application-wide utilities such as logging and notifications. |
+| `run` | Information about the current filter run (counters, indices). |
+| `utils` | Utility functions: XML parsing, file I/O, date parsing. |
+| `fs` | Filesystem and process-launching actions. |
+
+## Reference
+
+<AccordionGroup>
+
+<Accordion title="msg — article properties & functions">
+
+### Properties
+
+| Name | Type | Read-only | Synchronized | Description |
+| :--- | :--- | :---: | :---: | :--- |
+| `assignedLabels` | `Array<Label>` | ✅ | ✅ | Labels currently assigned to the article. |
+| `categories` | `Array<MessageCategory>` | ✅ | ❌ | Categories extracted from the feed. |
+| `enclosures` | `Array<MessageEnclosure>` | ✅ | ❌ | Attachments/enclosures attached to the article. |
+| `id` | `Number` | ✅ | ❌ | ID assigned to the message in the RSS Guard local database. |
+| `customId` | `String` | ❌ | ❌ | ID as provided by the remote service or feed file. |
+| `title` | `String` | ❌ | ❌ | Article title. |
+| `url` | `String` | ❌ | ❌ | Article URL. |
+| `author` | `String` | ❌ | ❌ | Author of the article. |
+| `contents` | `String` | ❌ | ❌ | Article body/contents. |
+| `rawContents` | `String` | ❌ | ❌ | Raw XML or JSON data from the remote service. Only populated during live feed fetching, not when processing existing articles. |
+| `score` | `Number` | ❌ | ❌ | Arbitrary value in the range `<0.0, 100.0>`. Can be used to sort articles; has its own column in the articles list. |
+| `hasEnclosures` | `Boolean` | ✅ | ❌ | `true` if the article has at least one enclosure. |
+| `created` | `Date` | ❌ | ❌ | Publication date/time of the article. |
+| `createdIsMadeup` | `Boolean` | ✅ | ❌ | `true` if the date was not present in the feed and the current date/time was substituted. |
+| `isRead` | `Boolean` | ❌ | ✅ | Whether the article is marked as read. |
+| `isImportant` | `Boolean` | ❌ | ✅ | Whether the article is marked as important/starred. |
+| `isDeleted` | `Boolean` | ❌ | ❌ | Whether the article is in the recycle bin. |
+
+### Functions
+
+| Signature | Returns | Description |
+| :--- | :--- | :--- |
+| `addEnclosure(String url, String mime_type)` | `void` | Adds a multimedia attachment to the article. |
+| `removeEnclosure(int index)` | `Boolean` | Removes the enclosure at the given index (zero-based). Returns `true` if it existed and was removed. |
+| `removeAllEnclosures()` | `void` | Removes all enclosures from the article. |
+| `fetchFullContents(Boolean plain_text_only)` | `Boolean` | Fetches the full article contents (plain text or HTML). Use sparingly — it is slow and increases database size. |
+| `isAlreadyInDatabase(DuplicityCheck criteria)` | `Boolean` | Checks whether an identical message is already stored in the RSS Guard database. |
+| `isAlreadyInDatabaseWinkler(DuplicityCheck criteria, Number threshold = 0.1)` | `Boolean` | Checks whether a similar message exists using the Jaro-Winkler edit-distance algorithm. |
+| `assignLabel(String label_id)` | `Boolean` | Assigns a label to the article. `label_id` is the `customId` property of the `Label` type. |
+| `deassignLabel(String label_id)` | `Boolean` | Removes a label from the article. |
+| `deassignAllLabels()` | `void` | Removes all labels from the article. |
+| `exportCategoriesToLabels(Boolean assign_to_message)` | `void` | Creates RSS Guard labels for all categories of this article (supports RSS, Atom, and JSON). Optionally assigns the article to those labels. |
+
+</Accordion>
+
+<Accordion title="acc — account properties & functions">
+
+### Properties
+
+| Name | Type | Read-only | Description |
+| :--- | :--- | :---: | :--- |
+| `id` | `Number` | ✅ | Database ID of the account. |
+| `title` | `String` | ✅ | Title of the account. |
+| `availableLabels` | `Array<Label>` | ✅ | All labels available to assign to articles in this account. |
+
+### Functions
+
+| Signature | Returns | Description |
+| :--- | :--- | :--- |
+| `findLabel(String label_title)` | `String` | Finds a label by its title and returns its ID. |
+| `createLabel(String label_title, String hex_color_code)` | `String` | Creates a new label with the given title and color. Returns the new label ID. |
+
+</Accordion>
+
+<Accordion title="feed — feed properties">
+
+### Properties
+
+| Name | Type | Read-only | Description |
+| :--- | :--- | :---: | :--- |
+| `customId` | `String` | ✅ | Custom ID of the feed as provided by the remote service. |
+| `title` | `String` | ✅ | Title of the feed. |
+
+</Accordion>
+
+<Accordion title="app — application functions">
+
+### Functions
+
+| Signature | Returns | Description |
+| :--- | :--- | :--- |
+| `log(String message)` | `void` | Prints a message to RSS Guard's standard output and to the "Script output" box in the Article filters dialog. |
+| `showNotification(String title, String text)` | `void` | Displays a desktop toast notification with the given title and text. |
+
+</Accordion>
+
+<Accordion title="run — filter run properties">
+
+### Properties
+
+| Name | Type | Read-only | Description |
+| :--- | :--- | :---: | :--- |
+| `numberOfAcceptedMessages` | `Number` | ✅ | Number of messages accepted so far in this feed-fetching run. |
+| `indexOfCurrentFilter` | `Number` | ✅ | Zero-based index of the currently executing filter. |
+| `totalCountOfFilters` | `Number` | ✅ | Total number of filters that will execute. |
+
+</Accordion>
+
+<Accordion title="utils — utility properties & functions">
+
+### Properties
+
+| Name | Type | Read-only | Description |
+| :--- | :--- | :---: | :--- |
+| `hostname` | `String` | ✅ | The name of the machine running RSS Guard. |
+
+### Functions
+
+| Signature | Returns | Description |
+| :--- | :--- | :--- |
+| `fromXmlToJson(String xml_string)` | `String` | Converts an XML string into JSON. |
+| `readFile(String filename)` | `ArrayBuffer` | Reads a file into an array buffer object. |
+| `writeFile(String filename, ArrayBuffer data)` | `void` | Writes an array buffer object to a file. |
+| `readTextFile(String filename)` | `String` | Reads a file into a UTF-8 string. |
+| `writeTextFile(String filename, String text)` | `void` | Writes a UTF-8 string to a file. |
+| `parseDateTime(String date_time)` | `Date` | Converts a textual date/time representation into a `Date` object. |
+
+</Accordion>
+
+<Accordion title="fs — filesystem & process functions">
+
+### Functions
+
+| Signature | Returns | Description |
+| :--- | :--- | :--- |
+| `runExecutable(String exec, Array<String> params, String stdin_data)` | `void` | Launches an external executable with optional parameters without waiting for it to finish. Optionally pipes data to its standard input. |
+| `runExecutableGetOutput(String exec, Array<String> params, String stdin_data)` | `String` | Launches an external executable, waits for it to finish, and returns its standard output. Optionally pipes data to its standard input. |
+
+</Accordion>
+
+</AccordionGroup>
+
+## Shared types
+
+<AccordionGroup>
+
+<Accordion title="FilteringAction enum">
+
+| Enumerant | Integer | Description |
+| :--- | :--- | :--- |
+| `Accept` | `1` | Message is accepted and will be added or updated in the database. |
+| `Ignore` | `2` | Message is ignored and will **not** be added or updated. Already-existing messages are not purged. |
+| `Purge` | `4` | Existing message is purged from the database entirely. Behaves like `Ignore` for new messages. |
+
+</Accordion>
+
+<Accordion title="DuplicityCheck enum">
+
+| Enumerant | Integer | Description |
+| :--- | :--- | :--- |
+| `SameTitle` | `1` | Check if a message with the same title already exists. |
+| `SameUrl` | `2` | Check if a message with the same URL already exists. |
+| `SameAuthor` | `4` | Check if a message with the same author already exists. |
+| `SameDateCreated` | `8` | Check if a message with the same creation date already exists. |
+| `AllFeedsSameAccount` | `16` | Perform the check across all feeds in the account, not just the current feed. |
+| `SameCustomId` | `32` | Check if a message with the same custom ID exists. |
+
+</Accordion>
+
+<Accordion title="MessageEnclosure type">
+
+| Name | Type | Read-only | Description |
+| :--- | :--- | :---: | :--- |
+| `url` | `String` | ✅ | URL of the enclosure. |
+| `mimeType` | `String` | ✅ | MIME type of the enclosure. |
+
+</Accordion>
+
+<Accordion title="MessageCategory type">
+
+| Name | Type | Read-only | Description |
+| :--- | :--- | :---: | :--- |
+| `title` | `String` | ✅ | Title of the category. |
+
+</Accordion>
+
+<Accordion title="Label type">
+
+| Name | Type | Read-only | Description |
+| :--- | :--- | :---: | :--- |
+| `title` | `String` | ✅ | Label name. |
+| `customId` | `String` | ✅ | Service-specific unique identifier for the label. Used as the argument to `assignLabel` / `deassignLabel`. |
+
+</Accordion>
+
+</AccordionGroup>
+
+## Examples
+
+### 1. Whitelist filter with regular expressions
+
+Accept only articles whose titles match at least one pattern in a whitelist; ignore everything else.
+
+```js
+/*
+ * Accept whitelisted articles based on regular expression filtering.
+ */
+function filterMessage() {
+  // List of regular expressions.
+  const whitelist = [
+    /ubuntu.+desktop/i,
+    /linux.+app/i,
+    /\d.billion/i];
+
+  // Accept article if it meets at least one of those regular expressions.
+  if (whitelist.some(re => re.test(msg.title))) {
+    return Msg.Accept;
+  }
+
+  return Msg.Ignore;
+}
+```
+
+### 2. Mark articles important by keyword
+
+Accept all articles but flag matching ones as important/starred.
+
+```js
+/*
+ * Mark all whitelisted messages as important.
+ */
+function filterMessage() {
+  const whitelist = [
+    /stock/i,
+    /crypto/i,
+    /market/i];
+
+  if (whitelist.some(re => re.test(msg.title))) {
+    msg.isImportant = true;
+  }
+
+  return Msg.Accept;
+}
+```
+
+### 3. Ignore duplicates using Jaro-Winkler similarity
+
+Suppress incoming articles that are very similar to articles already in the database, based on URL similarity.
+
+```js
+/*
+ * Ignore incoming articles which have very SIMILAR (not same) URL
+ * as some article stored in database.
+ *
+ * Use very high similarity factor 0.05 which ensures that only highly
+ * similar URLs are considered "same".
+ */
+function filterMessage() {
+  if (msg.isAlreadyInDatabaseWinkler(Msg.SameUrl, 0.05)) {
+    return Msg.Ignore;
+  }
+
+  return Msg.Accept;
+}
+```
+
+### 4. Auto-assign label "AI"
+
+Find or look up the "AI" label and assign it to any matching article. The label must already exist in RSS Guard.
+
+```js
+/*
+ * Assign label "AI" to all articles matching at least one whitelist condition.
+ *
+ * Make sure to have label "AI" created beforehand.
+ */
+function filterMessage() {
+  if (/AI|robot|software|hardware/i.test(msg.title)) {
+    let id = acc.findLabel("AI");
+
+    if (id) {
+      msg.assignLabel(id);
+    }
+  }
+
+  return Msg.Accept;
+}
+```
+
+### 5. Desktop notification for breaking news
+
+Show a toast notification and mark the article important whenever a genuinely new breaking-news article arrives.
+
+```js
+/*
+ * Display desktop notification when totally new breaking news are incoming.
+ */
+function filterMessage() {
+  if (/breaking/i.test(msg.title) && !msg.isAlreadyInDatabaseWinkler(Msg.SameTitle, 0.05)) {
+    app.showNotification("Breaking News", msg.title);
+    msg.isImportant = true;
+  }
+
+  return Msg.Accept;
+}
+```
+
+### 6. Assign article score from a keywords file
+
+Read a `keywords.txt` file from the user-data folder where each line is `keyword,score`, compute an additive score for the article, and optionally mark it important if the score is high enough.
+
+```js
+/*
+ * Assign score to articles based on keywords from an external file.
+ *
+ * Each line in `%data%/keywords.txt` should be:
+ *   keyword,score
+ *
+ * Example:
+ *   crypto,50
+ *   blockchain,30
+ *
+ * Scores are additive but capped at 100.
+ */
+function filterMessage() {
+  let keywords = [];
+
+  try {
+    let fileContent = utils.readTextFile('%data%/keywords.txt');
+    keywords =
+        fileContent.split(/\r?\n/)
+            .map(line => {
+              let parts = line.split(',');
+              if (parts.length === 2) {
+                return {term: parts[0].trim(), score: Number(parts[1].trim())};
+              }
+              return null;
+            })
+            .filter(k => k && !isNaN(k.score));
+  } catch (e) {
+    app.log('Keywords file missing → default score 0.');
+    msg.score = 0;
+    return Msg.Accept;
+  }
+
+  let totalScore = 0;
+
+  for (let k of keywords) {
+    let re = new RegExp(k.term, 'i');
+    if (re.test(msg.title) || re.test(msg.contents)) {
+      totalScore += k.score;
+    }
+  }
+
+  // Cap score at 100.
+  if (totalScore > 100) {
+    totalScore = 100;
+  }
+
+  msg.score = totalScore;
+
+  // Optional: mark as important if high score.
+  if (msg.score >= 70) {
+    msg.isImportant = true;
+  }
+
+  return Msg.Accept;
+}
+```
+
+<Tip>
+Use the **Test** button in the Article filters dialog to validate a filter against existing messages without making permanent changes. When you are confident the filter behaves correctly, use **Process checked feeds** to apply changes to existing articles.
+</Tip>

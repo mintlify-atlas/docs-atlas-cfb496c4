@@ -1,0 +1,73 @@
+---
+title: "Plugin API: Adding New Feed Services"
+description: "Use the RSS Guard C++ plugin API to integrate new online feed services as dynamically loaded plugins with full account management support."
+---
+
+RSS Guard exposes a C++ plugin API that lets you add support for new online services — such as RSS aggregators, news readers, or custom feed backends — as first-class integrations. A plugin is compiled as a separate dynamic library and loaded by RSS Guard at runtime alongside the built-in service plugins.
+
+The base API classes live in the [`abstract`](https://github.com/martinrotter/rssguard/tree/master/src/librssguard/services/abstract) folder of the repository. The API is reasonably simple to understand but relatively extensive, with sane defaults applied wherever it makes sense.
+
+## Core classes
+
+Every plugin must subclass and implement two base classes:
+
+<AccordionGroup>
+  <Accordion title="ServiceEntryPoint">
+    `ServiceEntryPoint` is the top-level descriptor for your plugin. RSS Guard uses it to discover and identify the plugin.
+
+    Implement this class to provide:
+
+    - Plugin name, author, and version metadata
+    - A factory method called when the user creates a new account of this service type
+    - A loader method called when existing accounts of this service type are read back from the database on startup
+
+    Think of `ServiceEntryPoint` as the plugin's manifest and factory combined.
+  </Accordion>
+
+  <Accordion title="ServiceRoot">
+    `ServiceRoot` is the core account class. An instance of this class represents a single configured account as a node in the feed list tree.
+
+    Implement this class to handle:
+
+    - Account startup and teardown
+    - Synchronizing feeds and articles from the remote service
+    - Marking messages as read, unread, starred, or deleted
+    - Label assignment and unassignment
+    - Any other account-level operations your service supports
+
+    `ServiceRoot` is where the bulk of your integration logic lives.
+  </Accordion>
+</AccordionGroup>
+
+## Plugin structure
+
+A plugin is a separate shared library (`.so` / `.dll` / `.dylib`) that RSS Guard discovers and loads at startup. The library exports the entry point that RSS Guard uses to instantiate `ServiceEntryPoint`.
+
+```cpp
+// Example plugin structure
+
+#include "services/abstract/serviceentrypoint.h"
+#include "services/abstract/serviceroot.h"
+
+class MyServiceEntryPoint : public ServiceEntryPoint {
+  // Return plugin metadata (name, author, description, etc.)
+  // Implement account creation and database loading methods
+};
+
+class MyServiceRoot : public ServiceRoot {
+  // Implement account startup/shutdown
+  // Implement message state changes (read, unread, starred, deleted)
+  // Implement feed/article synchronization with the remote service
+  // Implement label management if supported
+};
+```
+
+<Note>
+  The API provides sane defaults for many operations. You only need to override the methods relevant to your service. Start by looking at what `ServiceRoot` already handles before adding custom logic.
+</Note>
+
+## Reference implementation
+
+The **GReader plugin** (`librssguard-greader`) is a production plugin that integrates Google Reader–compatible services (Miniflux, FreshRSS, Nextcloud News, etc.). It is a good reference for how a real-world plugin is structured.
+
+Browse the source at: [github.com/martinrotter/rssguard/tree/devbuild5/src/librssguard-greader](https://github.com/martinrotter/rssguard/tree/devbuild5/src/librssguard-greader)

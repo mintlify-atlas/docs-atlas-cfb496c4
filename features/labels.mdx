@@ -1,0 +1,41 @@
+---
+title: "Organizing Articles with Labels"
+description: "Use labels to tag and categorize articles in RSS Guard, sync tags with supported services, and automate assignment with article filters."
+---
+
+RSS Guard supports labels (also called tags) as a flexible way to categorize articles across all your feeds. Any number of labels can be assigned to any article, and for several hosted services those labels are kept in sync with the upstream service automatically.
+
+## Creating labels
+
+Labels are managed directly from the feed list.
+
+1. In the feed list, right-click the **Labels** item.
+2. Select the option to add a new label from the context menu.
+3. In the dialog that appears, enter a **title** for the label and pick a **color** to distinguish it visually.
+4. Confirm the dialog. The new label will appear under the **Labels** node in the feed list.
+
+## Assigning labels
+
+Labels can be assigned and removed from within the article viewer. Open any article and use the label controls in the message viewer to toggle label assignment on or off.
+
+<Note>
+Unassigning a label from an article is also synchronized at regular intervals for services that support label synchronization, just like assigning one.
+</Note>
+
+## Label synchronization
+
+For services that support label synchronization, RSS Guard keeps your local labels in sync with the upstream service automatically during feed refresh cycles.
+
+<Warning>
+Some services do not allow labels to be created directly from RSS Guard. In these cases you must create the label through the web interface of the respective service first, then run **Synchronize folders & other items** inside RSS Guard. This sync operation will fetch the newly created labels and make them available locally.
+</Warning>
+
+The following categories of behavior apply across service types:
+
+- **Full sync** — labels created in RSS Guard are pushed to the service, and labels created on the service are pulled down.
+- **Pull-only** — labels must be created via the service's web UI; RSS Guard can assign and sync them but cannot create new ones remotely.
+- **No sync** — labels exist only locally (typical for the built-in RSS/Atom account type).
+
+<Tip>
+You can use [article filters](/features/filters) to automatically assign or remove labels based on rules you define — for example, tagging every article from a specific feed or containing a certain keyword. This makes it easy to keep your label taxonomy consistent without manual effort.
+</Tip>

@@ -1,0 +1,48 @@
+---
+title: "Feed Formats & Online Services"
+description: "RSS Guard supports RSS, ATOM, RDF, JSON, iCalendar, Sitemap, and Gemini feeds, plus two-way sync with Feedly, Gmail, FreshRSS, Nextcloud News, and more."
+---
+
+RSS Guard is a multi-account application. A single installation can hold any number of accounts, each backed by a different plugin. The built-in `standard` plugin handles local feeds in all common formats, while additional plugins connect to online feed services with full two-way synchronization.
+
+## Standard feed formats
+
+The `standard` plugin supports the following feed formats:
+
+- **RSS** — Really Simple Syndication (all common versions)
+- **ATOM** — Atom Syndication Format
+- **RDF** — Resource Description Framework feeds
+- **JSON** — [JSONFeed](https://www.jsonfeed.org) format
+- **iCalendar** — calendar event feeds following the [iCalendar standard](https://en.wikipedia.org/wiki/ICalendar)
+- **Sitemap** — [XML Sitemaps](https://en.wikipedia.org/wiki/Sitemaps), including Sitemap index discovery and compressed sitemaps
+- **XMPP** — real-time ATOM entries via XMPP PubSub, plus single-user and multi-user chat messages
+
+<Info>
+  RSS Guard also has native support for the [Gemini protocol](https://geminiprotocol.net). It can fetch any of the above feed formats over a Gemini connection without additional configuration.
+</Info>
+
+## Online services
+
+The following web-based feed services are supported through built-in plugins:
+
+| Service | Two-way sync | ISA | Synchronized labels | OAuth |
+| :--- | :---: | :---: | :---: | :---: |
+| Feedly | ✅ | ✅ | ✅ | ✅ (official binaries only) |
+| Gmail | ✅ | ✅ | ✅ | ✅ |
+| Google Reader API [^1] | ✅ | ✅ | ✅ | ✅ (Inoreader only) |
+| Nextcloud News | ✅ | ❌ | ❌ | ❌ |
+| Tiny Tiny RSS | ✅ | ✅ | ✅ | ❌ |
+
+[^1]: Tested services using the Google Reader API: Bazqux, FreshRSS, Inoreader, Miniflux, Reedah, TheOldReader.
+
+<Info>
+  **Intelligent Synchronization Algorithm (ISA):** Plugins that support ISA only download articles that are new or have been updated by the remote server. The older algorithm always fetches all available articles regardless of whether they changed, which wastes bandwidth and processing time. ISA typically offers faster sync and lower data usage.
+</Info>
+
+<Info>
+  **Synchronized labels:** RSS Guard supports [labels](/features/labels) in all plugins. For plugins marked ❌ in the "Synchronized labels" column, labels are local-only — they are not sent back to the service, usually because the service itself does not support the feature.
+</Info>
+
+<Info>
+  **OAuth:** [OAuth](https://en.wikipedia.org/wiki/OAuth) is an open authorization standard used to authenticate users with online services without exposing passwords. Where OAuth is listed as "official binaries only", third-party builds require separate API credentials.
+</Info>

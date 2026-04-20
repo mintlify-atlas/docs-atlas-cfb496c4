@@ -1,0 +1,34 @@
+---
+title: "Article Display & HTML Rendering"
+description: "Understand how RSS Guard renders articles using the litehtml engine, its trade-offs versus QtWebEngine, and how to play media from within articles."
+---
+
+RSS Guard ships with a built-in HTML rendering component so articles are displayed with proper formatting without requiring an external browser. The default renderer is based on `litehtml`, a lightweight engine optimised for speed and low memory use. A heavier alternative, `QtWebEngine`, was previously available but has since been removed.
+
+## litehtml renderer
+
+[`litehtml`](http://www.litehtml.com) is the default article display component. It supports nearly complete CSS and renders most feed content with good fidelity. Because it is purpose-built for document display rather than full web browsing, it is significantly faster and produces much smaller application binaries than a full browser engine.
+
+**Advantages:**
+- Very low memory footprint compared to browser-based renderers.
+- Fast rendering, even on modest hardware.
+- Near-complete CSS support for well-formatted article content.
+- Results in significantly slimmer application binaries.
+
+**Limitations to be aware of:**
+- No support for direct PDF printing.
+- Text selection and URL drag operations require the mouse **middle button** (scroll wheel click) to be held — standard left-click drag does not work.
+- Text selection may have occasional visual quirks.
+- No right-to-left (RTL) text support.
+- No support for animated GIFs.
+- No direct in-page media playback.
+
+<Info>
+For media playback within articles, use the built-in media player. Right-click any link in the article viewer or use **Articles → Play in media player** to send the URL to the player.
+</Info>
+
+## QtWebEngine
+
+<Warning>
+`QtWebEngine` was removed in RSS Guard 5 and is no longer available as an article display option.
+</Warning>
